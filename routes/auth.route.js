@@ -6,6 +6,7 @@ const {
   loginValidation,
   registerValidation,
 } = require('../validations/auth.validation');
+const auth = require('../middleware/auth.middleware');
 
 router.post('/register', async (req, res) => {
   const { error } = registerValidation(req.body);
@@ -70,6 +71,53 @@ router.post('/login', async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(400).send(error);
+  }
+});
+
+router.post('/password/is-correct', auth, async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.user._id });
+    if (!user) return res.status(404).send('User not found!');
+
+    const isPasswordCorrect = await bcryptjs.compare(
+      req.body.password,
+      user.password
+    );
+
+    res.status(200).send(isPasswordCorrect);
+  } catch (error) {
+    res.status(500).send('Server internal error!');
+  }
+});
+
+router.post('/password/change', auth, async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.user._id });
+    if (!user) return res.status(404).send('User not found!');
+
+    const isOldPasswordCorrect = await bcryptjs.compare(
+      req.body.oldPassword,
+      user.password
+    );
+    if (!isOldPasswordCorrect)
+      return res.status(400).send('Old password is incorrect!');
+
+    const salt = await bcryptjs.genSalt(10);
+    const hashPassword = await bcryptjs.hash(req.body.newPassword, salt);
+
+    const updatedUser = await User.updateOne(
+      {
+        _id: req.user._id,
+      },
+      {
+        $set: {
+          password: hashPassword,
+        },
+      }
+    );
+    res.status(200).send(updatedUser);
+  } catch (error) {
+    res.status(500).send('Server internal error!');
   }
 });
 
