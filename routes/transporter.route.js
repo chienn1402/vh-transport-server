@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
     const transporters = await Transporter.find();
     res.status(200).send(transporters);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(500).send('Server internal error!');
   }
 });
 
@@ -38,7 +38,7 @@ router.post('/', auth, async (req, res) => {
     const savedTransporter = await transporter.save();
     res.status(200).send(savedTransporter);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(500).send('Server internal error!');
   }
 });
 
@@ -49,7 +49,7 @@ router.get('/find-by-phone-number/:phoneNumber', async (req, res) => {
     });
     res.status(200).send(transporter);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(500).send('Server internal error!');
   }
 });
 
@@ -67,7 +67,7 @@ router.put('/soft-delete/:transporterId', auth, async (req, res) => {
     );
     res.status(200).send(deletedTransporter);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(500).send('Server internal error!');
   }
 });
 
@@ -96,7 +96,7 @@ router.put('/:transporterId', auth, async (req, res) => {
     );
     res.status(200).send(updatedTransporter);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(500).send('Server internal error!');
   }
 });
 

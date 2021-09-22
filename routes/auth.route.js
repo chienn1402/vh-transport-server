@@ -38,7 +38,7 @@ router.post('/register', async (req, res) => {
     const savedUser = await user.save();
     res.status(200).send(savedUser);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(500).send('Server internal error!');
   }
 });
 
@@ -69,8 +69,7 @@ router.post('/login', async (req, res) => {
     });
     res.header('auth-token', token).send(token);
   } catch (error) {
-    console.log(error);
-    res.status(400).send(error);
+    res.status(500).send('Server internal error!');
   }
 });
 

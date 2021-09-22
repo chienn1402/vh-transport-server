@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
     const orders = await Order.find({});
     res.status(200).send(orders);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(500).send('Server internal error!');
   }
 });
 
@@ -51,7 +51,7 @@ router.get('/find-by-transporter/:transporterPhoneNumber', async (req, res) => {
     );
     res.status(200).send(orders);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(500).send('Server internal error!');
   }
 });
 
@@ -66,7 +66,7 @@ router.get('/find-by-recipient/:recipientPhoneNumber', async (req, res) => {
     );
     res.status(200).send(orders);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(500).send('Server internal error!');
   }
 });
 
@@ -84,7 +84,7 @@ router.delete('/soft-delete/:orderId', auth, async (req, res) => {
     );
     res.status(200).send(deletedOrder);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(500).send('Server internal error!');
   }
 });
 
@@ -119,7 +119,7 @@ router.put('/:orderId', auth, async (req, res) => {
     );
     res.status(200).send(updatedOrder);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(500).send('Server internal error!');
   }
 });
 
