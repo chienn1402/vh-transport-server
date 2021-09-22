@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Order = require('../models/order.model');
+const Transporter = require('../models/transporter.model');
 const orderValidation = require('../validations/order.validation');
 const auth = require('../middleware/auth.middleware');
 
@@ -44,12 +45,15 @@ router.post('/', auth, async (req, res) => {
 
 router.get('/find-by-transporter/:transporterPhoneNumber', async (req, res) => {
   try {
-    const orders = await Order.find(
-      { transporterPhoneNumber: req.params.transporterPhoneNumber },
-      null,
-      { sort: { date: -1 } }
-    );
-    res.status(200).send(orders);
+    const [transporter, orders] = await Promise.all([
+      Transporter.findOne({ phoneNumber: req.params.transporterPhoneNumber }),
+      Order.find(
+        { transporterPhoneNumber: req.params.transporterPhoneNumber },
+        null,
+        { sort: { date: -1 } }
+      ),
+    ]);
+    res.status(200).send({ transporter, orders });
   } catch (error) {
     res.status(500).send('Server internal error!');
   }
