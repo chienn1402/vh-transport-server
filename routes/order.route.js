@@ -70,11 +70,18 @@ router.get('/find-by-recipient/:recipientPhoneNumber', async (req, res) => {
   }
 });
 
-router.delete('/:orderId', auth, async (req, res) => {
+router.delete('/soft-delete/:orderId', auth, async (req, res) => {
   try {
-    const deletedOrder = await Order.remove({
-      _id: req.params.orderId,
-    });
+    const deletedOrder = await Order.updateOne(
+      {
+        _id: req.params.orderId,
+      },
+      {
+        $set: {
+          status: 0,
+        },
+      }
+    );
     res.status(200).send(deletedOrder);
   } catch (error) {
     res.status(400).send(error);

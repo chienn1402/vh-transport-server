@@ -53,11 +53,18 @@ router.get('/find-by-phone-number/:phoneNumber', async (req, res) => {
   }
 });
 
-router.delete('/:transporterId', auth, async (req, res) => {
+router.put('/soft-delete/:transporterId', auth, async (req, res) => {
   try {
-    const deletedTransporter = await Transporter.deleteOne({
-      _id: req.params.transporterId,
-    });
+    const deletedTransporter = await Transporter.updateOne(
+      {
+        _id: req.params.transporterId,
+      },
+      {
+        $set: {
+          status: 0,
+        },
+      }
+    );
     res.status(200).send(deletedTransporter);
   } catch (error) {
     res.status(400).send(error);
