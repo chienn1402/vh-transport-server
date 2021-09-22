@@ -5,7 +5,7 @@ const auth = require('../middleware/auth.middleware');
 
 router.get('/', async (req, res) => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find({});
     res.status(200).send(orders);
   } catch (error) {
     res.status(400).send(error);
@@ -25,12 +25,13 @@ router.post('/', auth, async (req, res) => {
 
   const order = new Order({
     transporterName: req.body.transporterName,
-    transporterPhoneNumber: req.body.transporterPhoneNumber,
-    recipientPhoneNumber: req.body.recipientPhoneNumber,
+    transporterTel: req.body.transporterTel,
+    receiverName: req.body.receiverName,
+    receiverTel: req.body.receiverTel,
     receivePlace: req.body.receivePlace,
-    quantity: req.body.quantity,
-    transportFee: req.body.transportFee,
-    moneyHelpCollect: req.body.moneyHelpCollect,
+    goods: req.body.goods,
+    transFee: req.body.transFee,
+    codFee: req.body.codFee,
   });
 
   try {
@@ -99,12 +100,13 @@ router.put('/:orderId', auth, async (req, res) => {
       {
         $set: {
           transporterName: req.body.transporterName,
-          transporterPhoneNumber: req.body.transporterPhoneNumber,
-          recipientPhoneNumber: req.body.recipientPhoneNumber,
+          transporterTel: req.body.transporterTel,
+          receiverName: req.body.receiverName,
+          receiverTel: req.body.receiverTel,
           receivePlace: req.body.receivePlace,
-          quantity: req.body.quantity,
-          transportFee: req.body.transportFee,
-          moneyHelpCollect: req.body.moneyHelpCollect,
+          goods: req.body.goods,
+          transFee: req.body.transFee,
+          codFee: req.body.codFee,
         },
       }
     );

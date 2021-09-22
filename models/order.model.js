@@ -5,11 +5,15 @@ const orderSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  transporterPhoneNumber: {
+  transporterTel: {
     type: String,
     required: true,
   },
-  recipientPhoneNumber: {
+  receiverName: {
+    type: String,
+    required: true,
+  },
+  receiverTel: {
     type: String,
     required: true,
     min: 10,
@@ -19,19 +23,23 @@ const orderSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  quantity: {
+  goods: {
     type: String,
     required: true,
   },
-  transportFee: {
+  transFee: {
     type: Number,
   },
-  moneyHelpCollect: {
+  codFee: {
     type: Number,
   },
-  date: {
+  createdDate: {
     type: Date,
     default: Date.now,
+  },
+  status: {
+    type: Number,
+    default: 1,
   },
 });
 

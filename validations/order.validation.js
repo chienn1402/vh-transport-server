@@ -3,12 +3,13 @@ const Joi = require('@hapi/joi');
 const orderValidation = (data) => {
   const scheme = Joi.object({
     transporterName: Joi.string().required(),
-    transporterPhoneNumber: Joi.string().min(10).max(10).required(),
-    recipientPhoneNumber: Joi.string().min(10).max(10).required(),
+    transporterTel: Joi.string().min(10).max(10).required(),
+    receiverName: Joi.string().required(),
+    receiverTel: Joi.string().min(10).max(10).required(),
     receivePlace: Joi.string().required(),
-    quantity: Joi.string().required(),
-    transportFee: Joi.number().required(),
-    moneyHelpCollect: Joi.number(),
+    goods: Joi.string().required(),
+    transFee: Joi.number().required(),
+    codFee: Joi.number(),
   });
 
   return scheme.validate(data);
