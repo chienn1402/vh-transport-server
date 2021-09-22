@@ -42,17 +42,6 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-router.get('/find-by-phone-number/:phoneNumber', async (req, res) => {
-  try {
-    const transporter = await Transporter.findOne({
-      phoneNumber: req.params.phoneNumber,
-    });
-    res.status(200).send(transporter);
-  } catch (error) {
-    res.status(500).send('Server internal error!');
-  }
-});
-
 router.put('/soft-delete/:transporterId', auth, async (req, res) => {
   try {
     const deletedTransporter = await Transporter.updateOne(
