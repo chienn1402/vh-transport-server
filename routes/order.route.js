@@ -3,10 +3,33 @@ const Order = require('../models/order.model');
 const Transporter = require('../models/transporter.model');
 const orderValidation = require('../validations/order.validation');
 const auth = require('../middleware/auth.middleware');
+const moment = require('moment');
 
 router.get('/', async (req, res) => {
+  const transporterName = req.query.transporterName;
+  const transporterTel = req.query.transporterTel;
+  const receiverName = req.query.receiverName;
+  const receiverTel = req.query.receiverTel;
+  const status = req.query.status === '0' ? 0 : 1;
+  const createdDateFrom = req.query.createdDateFrom;
+  const createdDateTo = req.query.createdDateTo;
+
   try {
-    const orders = await Order.find({});
+    const orders = await Order.find({
+      transporterName: { $regex: new RegExp(transporterName) },
+      transporterTel: { $regex: new RegExp(transporterTel) },
+      receiverName: { $regex: new RegExp(receiverName) },
+      receiverTel: { $regex: new RegExp(receiverTel) },
+      status: status,
+      createdDate: {
+        $gte: createdDateFrom
+          ? moment(createdDateFrom).startOf('d')
+          : moment(process.env.EARLIEST_DATE_STR).startOf('d'),
+        $lte: createdDateTo
+          ? moment(createdDateTo).endOf('d')
+          : moment().endOf('d'),
+      },
+    });
     res.status(200).send(orders);
   } catch (error) {
     res.status(500).send('Internal server error!');
@@ -48,7 +71,10 @@ router.get('/find-by-transporter/:transporterPhoneNumber', async (req, res) => {
     const [transporter, orders] = await Promise.all([
       Transporter.findOne({ phoneNumber: req.params.transporterPhoneNumber }),
       Order.find(
-        { transporterPhoneNumber: req.params.transporterPhoneNumber },
+        {
+          transporterPhoneNumber: req.params.transporterPhoneNumber,
+          status: 1,
+        },
         null,
         { sort: { date: -1 } }
       ),
@@ -64,6 +90,7 @@ router.get('/find-by-recipient/:recipientPhoneNumber', async (req, res) => {
     const orders = await Order.find(
       {
         recipientPhoneNumber: req.params.recipientPhoneNumber,
+        status: 1,
       },
       null,
       { sort: { date: -1 } }
