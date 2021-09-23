@@ -24,7 +24,7 @@ router.get('/', async (req, res) => {
       createdDate: {
         $gte: createdDateFrom
           ? moment(createdDateFrom).startOf('d')
-          : moment(process.env.EARLIEST_DATE_STR).startOf('d'),
+          : moment('2021-01-01').startOf('d'),
         $lte: createdDateTo
           ? moment(createdDateTo).endOf('d')
           : moment().endOf('d'),
@@ -66,30 +66,36 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-router.get('/find-by-transporter/:transporterPhoneNumber', async (req, res) => {
+router.get('/find-by-transporter/:transporterTel', async (req, res) => {
   try {
     const [transporter, orders] = await Promise.all([
-      Transporter.findOne({ phoneNumber: req.params.transporterPhoneNumber }),
+      Transporter.findOne({ phoneNumber: req.params.transporterTel }),
       Order.find(
         {
-          transporterPhoneNumber: req.params.transporterPhoneNumber,
+          transporterTel: req.params.transporterTel,
           status: 1,
         },
         null,
         { sort: { date: -1 } }
       ),
     ]);
-    res.status(200).send({ transporter, orders });
+    res
+      .status(200)
+      .send({
+        transporterName: transporter.name,
+        transporterTel: transporter.phoneNumber,
+        orders,
+      });
   } catch (error) {
     res.status(500).send('Internal server error!');
   }
 });
 
-router.get('/find-by-recipient/:recipientPhoneNumber', async (req, res) => {
+router.get('/find-by-recipient/:receiverTel', async (req, res) => {
   try {
     const orders = await Order.find(
       {
-        recipientPhoneNumber: req.params.recipientPhoneNumber,
+        receiverTel: req.params.receiverTel,
         status: 1,
       },
       null,

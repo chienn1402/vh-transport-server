@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
       createdDate: {
         $gte: createdDateFrom
           ? moment(createdDateFrom).startOf('d')
-          : moment(process.env.EARLIEST_DATE_STR).startOf('d'),
+          : moment('2021-01-01').startOf('d'),
         $lte: createdDateTo
           ? moment(createdDateTo).endOf('d')
           : moment().endOf('d'),
