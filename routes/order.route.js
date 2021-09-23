@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
   const transporterTel = req.query.transporterTel;
   const receiverName = req.query.receiverName;
   const receiverTel = req.query.receiverTel;
-  const status = req.query.status === '0' ? 0 : 1;
+  const status = req.query.status;
   const createdDateFrom = req.query.createdDateFrom;
   const createdDateTo = req.query.createdDateTo;
 
@@ -20,7 +20,6 @@ router.get('/', async (req, res) => {
       transporterTel: { $regex: new RegExp(transporterTel) },
       receiverName: { $regex: new RegExp(receiverName) },
       receiverTel: { $regex: new RegExp(receiverTel) },
-      status: status,
       createdDate: {
         $gte: createdDateFrom
           ? moment(createdDateFrom).startOf('d')
@@ -29,6 +28,9 @@ router.get('/', async (req, res) => {
           ? moment(createdDateTo).endOf('d')
           : moment().endOf('d'),
       },
+      $or: status
+        ? [{ status }]
+        : [{ status: 1 }, { status: 2 }, { status: 3 }],
     });
     res.status(200).send(orders);
   } catch (error) {
@@ -56,7 +58,7 @@ router.post('/', auth, async (req, res) => {
     goods: req.body.goods,
     transFee: req.body.transFee,
     codFee: req.body.codFee,
-    totalFee: (req.body.transFee || 0) + (req.body.codFee || 0)
+    totalFee: (req.body.transFee || 0) + (req.body.codFee || 0),
   });
 
   try {
@@ -80,13 +82,10 @@ router.get('/find-by-transporter/:transporterTel', async (req, res) => {
         { sort: { date: -1 } }
       ),
     ]);
-    res
-      .status(200)
-      .send({
-        transporterName: transporter.name,
-        transporterTel: transporter.phoneNumber,
-        orders,
-      });
+    res.status(200).send({
+      transporter,
+      orders,
+    });
   } catch (error) {
     res.status(500).send('Internal server error!');
   }
@@ -108,7 +107,7 @@ router.get('/find-by-recipient/:receiverTel', async (req, res) => {
   }
 });
 
-router.delete('/soft-delete/:orderId', auth, async (req, res) => {
+router.put('/soft-delete/:orderId', auth, async (req, res) => {
   try {
     const deletedOrder = await Order.updateOne(
       {
@@ -116,7 +115,7 @@ router.delete('/soft-delete/:orderId', auth, async (req, res) => {
       },
       {
         $set: {
-          status: 0,
+          status: 3,
         },
       }
     );
@@ -152,6 +151,7 @@ router.put('/:orderId', auth, async (req, res) => {
           goods: req.body.goods,
           transFee: req.body.transFee,
           codFee: req.body.codFee,
+          status: req.body.status,
         },
       }
     );

@@ -10,6 +10,7 @@ const orderValidation = (data) => {
     goods: Joi.string().required(),
     transFee: Joi.number().required(),
     codFee: Joi.number(),
+    status: Joi.number(),
   });
 
   return scheme.validate(data);

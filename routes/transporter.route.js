@@ -7,7 +7,7 @@ const moment = require('moment');
 router.get('/', async (req, res) => {
   const name = req.query.name;
   const phoneNumber = req.query.phoneNumber;
-  const status = req.query.status === '0' ? 0 : 1;
+  const status = req.query.status;
   const createdDateFrom = req.query.createdDateFrom;
   const createdDateTo = req.query.createdDateTo;
 
@@ -24,6 +24,7 @@ router.get('/', async (req, res) => {
           ? moment(createdDateTo).endOf('d')
           : moment().endOf('d'),
       },
+      $or: status ? [{ status }] : [{ status: 1 }, { status: 2 }],
     });
     res.status(200).send(transporters);
   } catch (error) {
@@ -69,7 +70,7 @@ router.put('/soft-delete/:transporterId', auth, async (req, res) => {
       },
       {
         $set: {
-          status: 0,
+          status: 2,
         },
       }
     );
@@ -99,6 +100,7 @@ router.put('/:transporterId', auth, async (req, res) => {
         $set: {
           name: req.body.name,
           phoneNumber: req.body.phoneNumber,
+          status: req.body.status,
         },
       }
     );
