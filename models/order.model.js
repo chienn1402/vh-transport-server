@@ -29,9 +29,11 @@ const orderSchema = mongoose.Schema({
   },
   transFee: {
     type: Number,
+    default: 0
   },
   codFee: {
     type: Number,
+    default: 0
   },
   createdDate: {
     type: Date,
