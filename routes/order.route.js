@@ -41,7 +41,7 @@ router.get('/', async (req, res) => {
 router.get('/:orderId', async (req, res) => {
   try {
     const order = await Order.findById(req.params.orderId);
-    if (!order) return res.status(404).send('Order not found!')
+    if (!order) return res.status(404).send('Order not found!');
 
     res.status(200).send(order);
   } catch (error) {
@@ -87,7 +87,7 @@ router.get('/find-by-transporter/:transporterTel', async (req, res) => {
       Order.find(
         {
           transporterTel: req.params.transporterTel,
-          status: 1,
+          $or: [{ status: 1 }, { status: 2 }],
         },
         null,
         { sort: { date: -1 } }
@@ -107,7 +107,7 @@ router.get('/find-by-recipient/:receiverTel', async (req, res) => {
     const orders = await Order.find(
       {
         receiverTel: req.params.receiverTel,
-        status: 1,
+        $or: [{ status: 1 }, { status: 2 }],
       },
       null,
       { sort: { date: -1 } }
