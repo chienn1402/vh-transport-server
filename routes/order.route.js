@@ -16,9 +16,9 @@ router.get('/', async (req, res) => {
 
   try {
     const orders = await Order.find({
-      transporterName: { $regex: new RegExp(transporterName) },
+      transporterName: { $regex: new RegExp(transporterName, 'i') },
       transporterTel: { $regex: new RegExp(transporterTel) },
-      receiverName: { $regex: new RegExp(receiverName) },
+      receiverName: { $regex: new RegExp(receiverName, 'i') },
       receiverTel: { $regex: new RegExp(receiverTel) },
       createdDate: {
         $gte: createdDateFrom
@@ -33,6 +33,17 @@ router.get('/', async (req, res) => {
         : [{ status: 1 }, { status: 2 }, { status: 3 }],
     });
     res.status(200).send(orders);
+  } catch (error) {
+    res.status(500).send('Internal server error!');
+  }
+});
+
+router.get('/:orderId', async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.orderId);
+    if (!order) return res.status(404).send('Order not found!')
+
+    res.status(200).send(order);
   } catch (error) {
     res.status(500).send('Internal server error!');
   }

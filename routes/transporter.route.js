@@ -13,9 +13,8 @@ router.get('/', async (req, res) => {
 
   try {
     const transporters = await Transporter.find({
-      name: { $regex: new RegExp(name) },
+      name: { $regex: new RegExp(name, 'i') },
       phoneNumber: { $regex: new RegExp(phoneNumber) },
-      status: status,
       createdDate: {
         $gte: createdDateFrom
           ? moment(createdDateFrom).startOf('d')
@@ -27,6 +26,17 @@ router.get('/', async (req, res) => {
       $or: status ? [{ status }] : [{ status: 1 }, { status: 2 }],
     });
     res.status(200).send(transporters);
+  } catch (error) {
+    res.status(500).send('Internal server error!');
+  }
+});
+
+router.get('/:transporterId', async (req, res) => {
+  try {
+    const transporter = await Transporter.findById(req.params.transporterId);
+    if (!transporter) return res.status(404).send('Transporter not found!')
+
+    res.status(200).send(transporter);
   } catch (error) {
     res.status(500).send('Internal server error!');
   }
