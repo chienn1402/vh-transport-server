@@ -162,6 +162,7 @@ router.put('/:orderId', auth, async (req, res) => {
           goods: req.body.goods,
           transFee: req.body.transFee,
           codFee: req.body.codFee,
+          totalFee: (req.body.transFee || 0) + (req.body.codFee || 0),
           status: req.body.status,
         },
       }
