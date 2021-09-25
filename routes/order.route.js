@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
     });
     res.status(200).send(orders);
   } catch (error) {
-    res.status(500).send('Internal server error!');
+    res.status(500).send('Lỗi không xác định!');
   }
 });
 
@@ -45,7 +45,7 @@ router.get('/:orderId', async (req, res) => {
 
     res.status(200).send(order);
   } catch (error) {
-    res.status(500).send('Internal server error!');
+    res.status(500).send('Lỗi không xác định!');
   }
 });
 
@@ -109,7 +109,7 @@ router.get('/find-by-transporter/:transporterTel', async (req, res) => {
       orders,
     });
   } catch (error) {
-    res.status(500).send('Internal server error!');
+    res.status(500).send('Lỗi không xác định!');
   }
 });
 
@@ -136,7 +136,7 @@ router.get('/find-by-recipient/:receiverTel', async (req, res) => {
     );
     res.status(200).send(orders);
   } catch (error) {
-    res.status(500).send('Internal server error!');
+    res.status(500).send('Lỗi không xác định!');
   }
 });
 
@@ -154,7 +154,7 @@ router.put('/soft-delete/:orderId', auth, async (req, res) => {
     );
     res.status(200).send(deletedOrder);
   } catch (error) {
-    res.status(500).send('Internal server error!');
+    res.status(500).send('Lỗi không xác định!');
   }
 });
 
@@ -191,7 +191,7 @@ router.put('/:orderId', auth, async (req, res) => {
     );
     res.status(200).send(updatedOrder);
   } catch (error) {
-    res.status(500).send('Internal server error!');
+    res.status(500).send('Lỗi không xác định!');
   }
 });
 

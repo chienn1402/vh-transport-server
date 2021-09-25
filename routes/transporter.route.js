@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
     });
     res.status(200).send(transporters);
   } catch (error) {
-    res.status(500).send('Internal server error!');
+    res.status(500).send('Lỗi không xác định!');
   }
 });
 
@@ -38,7 +38,7 @@ router.get('/:transporterId', async (req, res) => {
 
     res.status(200).send(transporter);
   } catch (error) {
-    res.status(500).send('Internal server error!');
+    res.status(500).send('Lỗi không xác định!');
   }
 });
 
@@ -68,7 +68,7 @@ router.post('/', auth, async (req, res) => {
     const savedTransporter = await transporter.save();
     res.status(200).send(savedTransporter);
   } catch (error) {
-    res.status(500).send('Internal server error!');
+    res.status(500).send('Lỗi không xác định!');
   }
 });
 
@@ -86,7 +86,7 @@ router.put('/soft-delete/:transporterId', auth, async (req, res) => {
     );
     res.status(200).send(deletedTransporter);
   } catch (error) {
-    res.status(500).send('Internal server error!');
+    res.status(500).send('Lỗi không xác định!');
   }
 });
 
@@ -123,7 +123,7 @@ router.put('/:transporterId', auth, async (req, res) => {
     );
     res.status(200).send(updatedTransporter);
   } catch (error) {
-    res.status(500).send('Internal server error!');
+    res.status(500).send('Lỗi không xác định!');
   }
 });
 
