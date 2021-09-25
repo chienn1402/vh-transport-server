@@ -81,12 +81,23 @@ router.post('/', auth, async (req, res) => {
 });
 
 router.get('/find-by-transporter/:transporterTel', async (req, res) => {
+  const createdDateFrom = req.query.createdDateFrom;
+  const createdDateTo = req.query.createdDateTo;
+
   try {
     const [transporter, orders] = await Promise.all([
       Transporter.findOne({ phoneNumber: req.params.transporterTel }),
       Order.find(
         {
           transporterTel: req.params.transporterTel,
+          createdDate: {
+            $gte: createdDateFrom
+              ? moment(createdDateFrom).startOf('d')
+              : moment('2021-01-01').startOf('d'),
+            $lte: createdDateTo
+              ? moment(createdDateTo).endOf('d')
+              : moment().endOf('d'),
+          },
           $or: [{ status: 1 }, { status: 2 }],
         },
         null,
@@ -103,10 +114,21 @@ router.get('/find-by-transporter/:transporterTel', async (req, res) => {
 });
 
 router.get('/find-by-recipient/:receiverTel', async (req, res) => {
+  const createdDateFrom = req.query.createdDateFrom;
+  const createdDateTo = req.query.createdDateTo;
+
   try {
     const orders = await Order.find(
       {
         receiverTel: req.params.receiverTel,
+        createdDate: {
+          $gte: createdDateFrom
+            ? moment(createdDateFrom).startOf('d')
+            : moment('2021-01-01').startOf('d'),
+          $lte: createdDateTo
+            ? moment(createdDateTo).endOf('d')
+            : moment().endOf('d'),
+        },
         $or: [{ status: 1 }, { status: 2 }],
       },
       null,
