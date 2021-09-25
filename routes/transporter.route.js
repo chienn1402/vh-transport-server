@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
 router.get('/:transporterId', async (req, res) => {
   try {
     const transporter = await Transporter.findById(req.params.transporterId);
-    if (!transporter) return res.status(404).send('Không tìm thấy nhà xe!')
+    if (!transporter) return res.status(404).send('Không tìm thấy nhà xe!');
 
     res.status(200).send(transporter);
   } catch (error) {
@@ -102,6 +102,13 @@ router.put('/:transporterId', auth, async (req, res) => {
       );
 
   try {
+    const isPhoneNumberExist = await Transporter.findOne({
+      _id: { $ne: req.params.transporterId },
+      phoneNumber: req.body.phoneNumber,
+    });
+    if (isPhoneNumberExist)
+      return res.status(400).send('Số điện thoại đã được sử dụng!');
+
     const updatedTransporter = await Transporter.updateOne(
       {
         _id: req.params.transporterId,
