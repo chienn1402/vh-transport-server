@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
 router.get('/:transporterId', async (req, res) => {
   try {
     const transporter = await Transporter.findById(req.params.transporterId);
-    if (!transporter) return res.status(404).send('Transporter not found!')
+    if (!transporter) return res.status(404).send('Không tìm thấy nhà xe!')
 
     res.status(200).send(transporter);
   } catch (error) {
@@ -50,14 +50,14 @@ router.post('/', auth, async (req, res) => {
       .send(
         error.details && error.details.length
           ? error.details[0].message
-          : 'Invalid data!'
+          : 'Thông tin không hợp lệ!'
       );
 
   const isPhoneNumberExist = await Transporter.findOne({
     phoneNumber: req.body.phoneNumber,
   });
   if (isPhoneNumberExist)
-    return res.status(400).send('Phone number already exists!');
+    return res.status(400).send('Số điện thoại đã được sử dụng!');
 
   const transporter = new Transporter({
     name: req.body.name,
@@ -98,7 +98,7 @@ router.put('/:transporterId', auth, async (req, res) => {
       .send(
         error.details && error.details.length
           ? error.details[0].message
-          : 'Invalid data!'
+          : 'Thông tin không hợp lệ!'
       );
 
   try {

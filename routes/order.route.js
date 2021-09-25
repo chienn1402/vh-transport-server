@@ -41,7 +41,7 @@ router.get('/', async (req, res) => {
 router.get('/:orderId', async (req, res) => {
   try {
     const order = await Order.findById(req.params.orderId);
-    if (!order) return res.status(404).send('Order not found!');
+    if (!order) return res.status(404).send('Không tìm thấy đơn hàng!');
 
     res.status(200).send(order);
   } catch (error) {
@@ -57,7 +57,7 @@ router.post('/', auth, async (req, res) => {
       .send(
         error.details && error.details.length
           ? error.details[0].message
-          : 'Invalid data!'
+          : 'Thông tin không hợp lệ!'
       );
 
   const order = new Order({
@@ -166,7 +166,7 @@ router.put('/:orderId', auth, async (req, res) => {
       .send(
         error.details && error.details.length
           ? error.details[0].message
-          : 'Invalid data!'
+          : 'Thông tin không hợp lệ!'
       );
 
   try {

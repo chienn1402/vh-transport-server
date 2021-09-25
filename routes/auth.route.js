@@ -16,14 +16,14 @@ router.post('/register', async (req, res) => {
       .send(
         error.details && error.details.length
           ? error.details[0].message
-          : 'Invalid data!'
+          : 'Thông tin không hợp lệ!'
       );
 
   const isUsernameExist = await User.findOne({ username: req.body.username });
-  if (isUsernameExist) return res.status(400).send('Username already exists!');
+  if (isUsernameExist) return res.status(400).send('Tên tài khoản đã được sử dụng!');
 
   const isEmailExist = await User.findOne({ email: req.body.email });
-  if (isEmailExist) return res.status(400).send('Email already exists!');
+  if (isEmailExist) return res.status(400).send('Địa chỉ email đã được sử dụng!');
 
   const salt = await bcryptjs.genSalt(10);
   const hashPassword = await bcryptjs.hash(req.body.password, salt);
@@ -50,19 +50,19 @@ router.post('/login', async (req, res) => {
       .send(
         error.details && error.details.length
           ? error.details[0].message
-          : 'Invalid data!'
+          : 'Thông tin không hợp lệ!'
       );
 
   try {
     const user = await User.findOne({ username: req.body.username });
-    if (!user) return res.status(400).send('Username is incorrect!');
+    if (!user) return res.status(400).send('Tên tài khoản không chính xác!');
 
     const isPasswordCorrect = await bcryptjs.compare(
       req.body.password,
       user.password
     );
     if (!isPasswordCorrect)
-      return res.status(400).send('Password is incorrect!');
+      return res.status(400).send('Mật khẩu không chính xác!');
 
     const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, {
       expiresIn: '2d',
@@ -76,7 +76,7 @@ router.post('/login', async (req, res) => {
 router.post('/password/is-correct', auth, async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.user._id });
-    if (!user) return res.status(404).send('User not found!');
+    if (!user) return res.status(404).send('Không tìm thấy người dùng!');
 
     const isPasswordCorrect = await bcryptjs.compare(
       req.body.password,
@@ -92,14 +92,14 @@ router.post('/password/is-correct', auth, async (req, res) => {
 router.post('/password/change', auth, async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.user._id });
-    if (!user) return res.status(404).send('User not found!');
+    if (!user) return res.status(404).send('Không tìm thấy người dùng!');
 
     const isOldPasswordCorrect = await bcryptjs.compare(
       req.body.oldPassword,
       user.password
     );
     if (!isOldPasswordCorrect)
-      return res.status(400).send('Old password is incorrect!');
+      return res.status(400).send('Mật khẩu cũ không chính xác!');
 
     const salt = await bcryptjs.genSalt(10);
     const hashPassword = await bcryptjs.hash(req.body.newPassword, salt);
