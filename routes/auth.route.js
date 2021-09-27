@@ -40,7 +40,7 @@ router.post('/register', async (req, res) => {
     const savedUser = await user.save();
     res.status(200).send(savedUser);
   } catch (error) {
-    res.status(500).send('Lỗi không xác định!');
+    res.status(500).send({ error });
   }
 });
 
@@ -71,7 +71,7 @@ router.post('/login', async (req, res) => {
     });
     res.header('auth-token', token).send(token);
   } catch (error) {
-    res.status(500).send('Lỗi không xác định!');
+    res.status(500).send({ error });
   }
 });
 
@@ -87,7 +87,7 @@ router.post('/password/is-correct', auth, async (req, res) => {
 
     res.status(200).send(isPasswordCorrect);
   } catch (error) {
-    res.status(500).send('Lỗi không xác định!');
+    res.status(500).send({ error });
   }
 });
 
@@ -118,7 +118,7 @@ router.post('/password/change', auth, async (req, res) => {
     );
     res.status(200).send(updatedUser);
   } catch (error) {
-    res.status(500).send('Lỗi không xác định!');
+    res.status(500).send({ error });
   }
 });
 
