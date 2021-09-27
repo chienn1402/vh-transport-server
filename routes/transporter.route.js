@@ -12,19 +12,23 @@ router.get('/', async (req, res) => {
   const createdDateTo = req.query.createdDateTo;
 
   try {
-    const transporters = await Transporter.find({
-      name: { $regex: new RegExp(name, 'i') },
-      phoneNumber: { $regex: new RegExp(phoneNumber) },
-      createdDate: {
-        $gte: createdDateFrom
-          ? moment(createdDateFrom).startOf('d')
-          : moment('2021-01-01').startOf('d'),
-        $lte: createdDateTo
-          ? moment(createdDateTo).endOf('d')
-          : moment().endOf('d'),
+    const transporters = await Transporter.find(
+      {
+        name: { $regex: new RegExp(name, 'i') },
+        phoneNumber: { $regex: new RegExp(phoneNumber) },
+        createdDate: {
+          $gte: createdDateFrom
+            ? moment(createdDateFrom).startOf('d')
+            : moment('2021-01-01').startOf('d'),
+          $lte: createdDateTo
+            ? moment(createdDateTo).endOf('d')
+            : moment().endOf('d'),
+        },
+        $or: status ? [{ status }] : [{ status: 1 }, { status: 2 }],
       },
-      $or: status ? [{ status }] : [{ status: 1 }, { status: 2 }],
-    });
+      null,
+      { sort: { date: -1 } }
+    );
     res.status(200).send(transporters);
   } catch (error) {
     res.status(500).send('Lỗi không xác định!');
@@ -124,6 +128,25 @@ router.put('/:transporterId', auth, async (req, res) => {
     res.status(200).send(updatedTransporter);
   } catch (error) {
     res.status(500).send('Lỗi không xác định!');
+  }
+});
+
+router.put('/multiple/change-status', async (req, res) => {
+  const transporterIds = req.body.transporterIds || [];
+  const status = req.body.status;
+
+  if (!transporterIds.length || !status)
+    return res.status(400).send('Thông tin không hợp lệ!');
+
+  try {
+    const updatedTransporters = await Order.updateMany(
+      { _id: { $in: transporterIds } },
+      { $set: { status } }
+    );
+
+    res.status(200).send(updatedTransporters);
+  } catch (error) {
+    res.status(500).send({ error });
   }
 });
 
