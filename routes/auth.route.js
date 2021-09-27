@@ -22,8 +22,10 @@ router.post('/register', async (req, res) => {
   const isUsernameExist = await User.findOne({ username: req.body.username });
   if (isUsernameExist) return res.status(400).send('Tên tài khoản đã được sử dụng!');
 
-  const isEmailExist = await User.findOne({ email: req.body.email });
-  if (isEmailExist) return res.status(400).send('Địa chỉ email đã được sử dụng!');
+  if (req.body.email) {
+    const isEmailExist = await User.findOne({ email: req.body.email });
+    if (isEmailExist) return res.status(400).send('Địa chỉ email đã được sử dụng!');
+  }
 
   const salt = await bcryptjs.genSalt(10);
   const hashPassword = await bcryptjs.hash(req.body.password, salt);

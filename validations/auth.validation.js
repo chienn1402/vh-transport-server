@@ -7,8 +7,7 @@ const registerValidation = (data) => {
       'string.base': 'Tên tài khoản không đúng định dạng!',
       'string.min': 'Tên tài khoản phải chứa ít nhất 6 ký tự!',
     }),
-    email: Joi.string().min(6).email().required().messages({
-      'string.empty': 'Email không được để trống!',
+    email: Joi.string().min(6).email().messages({
       'string.base': 'Email không đúng định dạng!',
       'string.email': 'Email không đúng định dạng!',
       'string.min': 'Email phải chứa ít nhất 6 ký tự!',
